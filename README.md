@@ -3,6 +3,7 @@
 A Game Developed by TypeScript.
 
 ### 🚧 TODO
+- [x] 添加热更新
 - [ ] 类名修改
 - [ ] 初始化地图排除死局
 - [ ] 游戏过程中遇死局重新布局
