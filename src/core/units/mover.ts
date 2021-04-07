@@ -1,37 +1,43 @@
 import Coordinate, { ICoordinate } from './coordinate';
 import Obstacle, { EObstacleType } from './obstacle';
 
-export interface IBox {
+export interface IMover {
   readonly coordinate: Coordinate;
   alias?: string;
   locked: boolean;
 }
 
-export default class Box implements IBox {
+export default class Mover implements IMover {
   readonly coordinate: Coordinate;
+  private readonly initialCoordinate: ICoordinate;
   alias?: string;
   locked: boolean = false;
 
   constructor(coordinate: Coordinate, alias?: string) {
     this.coordinate = coordinate;
+    this.initialCoordinate = coordinate.get();
     this.alias = alias;
   }
 
-  private isSameAlias(box: Box) {
-    return this.alias && box.alias && this.alias === box.alias;
+  private isSameAlias(mover: Mover) {
+    return this.alias && mover.alias && this.alias === mover.alias;
   }
 
-  private isSameCoordinate(box: Box) {
+  private isSameCoordinate(mover: Mover) {
     const { x, y } = this.coordinate.get();
-    const { x: tx, y: ty } = box.coordinate.get();
+    const { x: tx, y: ty } = mover.coordinate.get();
     return x === tx && y === ty;
   }
 
-  fit(box: Box) {
-    return this.isSameCoordinate(box) && this.isSameAlias(box);
+  reset() {
+    this.coordinate.set(this.initialCoordinate.x, this.initialCoordinate.y);
   }
 
-  move(to: ICoordinate, obstacle: Obstacle) {
+  fit(mover: Mover) {
+    return this.isSameCoordinate(mover) && this.isSameAlias(mover);
+  }
+
+  move(to: ICoordinate, obstacle?: Obstacle) {
     if (this.locked || !obstacle) return false;
     if (obstacle.type === EObstacleType.Stake) return false;
     if (obstacle.type === EObstacleType.Freeze) {

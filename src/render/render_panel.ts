@@ -8,16 +8,16 @@ export default class RenderPanel implements Render{
 
   render(info: IRendererInfo, layouts: ILayouts) {
     if (!this.context) return; 
-    const { map } = info;
+    const { cells } = info;
     const { x, y, w, h } = layouts.panel;
     // 背景色
     this.context.fillStyle = '#eee';
     this.context.fillRect(x, y, w, h);
     // 田字格
     const edge = w;
-    const gap = edge / Math.sqrt(map.length);
-    for (let i = 0; i < map.length; i++) {
-      const { obstacle, coordinate } = map[i];
+    const gap = edge / Math.sqrt(cells.length);
+    for (let i = 0; i < cells.length; i++) {
+      const { obstacle, coordinate } = cells[i];
       const { x: ox, y: oy } = coordinate.get();
       let fillColor = '#fff';
       switch(obstacle.type) {

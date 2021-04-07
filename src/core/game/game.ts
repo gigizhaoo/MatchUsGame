@@ -1,6 +1,12 @@
 import Renderer from '../../render/renderer';
-import Box from '../units/box';
+import Mover from '../units/mover';
 import PubSub, { Func } from '../pubsub/pubsub';
+
+export enum EGameResult {
+  Victory = 'victory',
+  Reset = 'reset',
+  Continue = 'continue',
+}
 
 export default abstract class Game {
 
@@ -20,8 +26,26 @@ export default abstract class Game {
   abstract start(): any
   abstract stop(): any
 
-  protected getResult(boxesA: Box[], boxesB: Box[]) {
-    return boxesA.every((box, i) => box.fit(boxesB[i]));
+  protected getResult(moversA: Mover[], moversB: Mover[]) {
+    let sets = new Set(moversA.map(mover => {
+      const {x, y} = mover.coordinate.get();
+      return `${x},${y}`;
+    }));
+    if (sets.size < moversA.length) {
+      return EGameResult.Reset;
+    }
+    sets = new Set(moversB.map(mover => {
+      const {x, y} = mover.coordinate.get();
+      return `${x},${y}`;
+    }));
+    if (sets.size < moversA.length) {
+      return EGameResult.Reset;
+    }
+    if (moversA.every((mover, i) => mover.fit(moversB[i]))) {
+      return EGameResult.Victory;
+    } else {
+      return EGameResult.Continue;
+    }
   }
 
   public addListener(type: string, fn: Func) {

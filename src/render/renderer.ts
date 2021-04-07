@@ -1,5 +1,5 @@
 import RenderPanel from './render_panel';
-import RenderBox from './render_box';
+import RenderMover from './render_mover';
 import RenderController from './render_controller';
 import RenderTime from './render_time';
 import RenderCount from './render_count';
@@ -89,8 +89,8 @@ export default class Renderer {
     const board = layouts.board;
     this.context.fillStyle = '#eee';
     this.context.fillRect(board.x, board.y, board.w, board.h);
-    // 元素
-    const boxSize = new RenderPanel(this.context).render(info, layouts);
+    // 单元格
+    const cellSize = new RenderPanel(this.context).render(info, layouts);
     // 时间
     new RenderTime(this.context).render(info, layouts);
     // 步数
@@ -98,12 +98,12 @@ export default class Renderer {
     // 控制器
     this.controller?.render(info, layouts);
     // 移动元素
-    const { boxGroup, lockedBoxGroup } = info;
-    for (let i = 0; i < boxGroup.length; i++) {
-      new RenderBox(this.context).render(info, { ...layouts, boxSize, ...boxGroup[i] });
+    const { movers, lockedMovers } = info;
+    for (let i = 0; i < movers.length; i++) {
+      new RenderMover(this.context).render(info, { ...layouts, cellSize, ...movers[i] });
     }
-    for (let i = 0; i < lockedBoxGroup.length; i++) {
-      new RenderBox(this.context).render(info, { ...layouts, boxSize, ...lockedBoxGroup[i] });
+    for (let i = 0; i < lockedMovers.length; i++) {
+      new RenderMover(this.context).render(info, { ...layouts, cellSize, ...lockedMovers[i] });
     }
     if (info.isSuccess) {
       new RenderSuccess(this.context).render(info, layouts);

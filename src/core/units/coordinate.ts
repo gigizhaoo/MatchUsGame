@@ -15,6 +15,10 @@ export default class Coordinate {
     return { x: this.x, y: this.y };
   }
 
+  copy() {
+    return new Coordinate(this.x, this.y);
+  }
+
   static random(x0: number, y0: number, x1: number, y1: number): ICoordinate {
     if (x0 > x1 || y0 > y1) {
       throw new Error('x1 must be greater tnen x0 and y0 must be greater then y1 too!');
