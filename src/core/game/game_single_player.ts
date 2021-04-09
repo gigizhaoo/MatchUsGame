@@ -6,7 +6,7 @@ import Coordinate, { ICoordinate } from '../units/coordinate';
 import Panel from '../units/panel';
 import Cell from '../units/cell';
 import { EObstacleType } from '../units/obstacle';
-import EDirection from '../units/direction';
+import { EDirection } from '../units/direction';
 import Pedometer from '../units/pedometer';
 import Timer from '../units/timer';
 

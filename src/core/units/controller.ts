@@ -1,4 +1,4 @@
-import EDirection from './direction';
+import { EDirection } from './direction';
 import PubSub, { Func } from '../pubsub/pubsub';
 
 export default class Controller {

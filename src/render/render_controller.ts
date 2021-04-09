@@ -1,20 +1,21 @@
 import Render, { Context } from  './render';
 import CanvasListener from '../core/listener/canvas_listener';
+import KeyboardListener from '../core/listener/keyboard_listener';
 import { IRendererInfo } from '../core/game/game_single_player';
 import { ILayouts } from './renderer';
-import EDirection from '../core/units/direction';
+import { EDirection, mapDirection2KeyCode } from '../core/units/direction';
 
 export interface IListeners {
   [direction: string]: CanvasListener
 }
 
-export interface IEvents {
-  [direction: string]: number[],
+export interface IHandlerKeys {
+  [direction: string]: string[],
 }
 
 export default class RenderController implements Render{
-  listeners: IListeners = {};
-  eventIds: IEvents = {};
+  canvasListeners: IListeners = {};
+  handlerKeys: IHandlerKeys = {};
   constructor(public context: Context) {}
 
   render(info: IRendererInfo, layouts: ILayouts) {
@@ -67,15 +68,18 @@ export default class RenderController implements Render{
     this.context.fillText('下', p8.x + 15, p8.y - 20);
     this.context.fillText('左', p10.x + 15, p10.y - 20);
 
-    if (Object.keys(this.listeners).length === 0 && !info.isSuccess) {
-      this.listeners[EDirection.Up] = new CanvasListener(this.context.canvas, p1.x, p1.y, p3.x, p3.y);
-      this.listeners[EDirection.Right] = new CanvasListener(this.context.canvas, p3.x, p3.y, p5.x, p5.y);
-      this.listeners[EDirection.Down] = new CanvasListener(this.context.canvas, p9.x, p9.y, p7.x, p7.y);
-      this.listeners[EDirection.Left] = new CanvasListener(this.context.canvas, p11.x, p11.y, p9.x, p9.y);
-      Object.keys(this.listeners).forEach(direction => {
-        this.eventIds[direction] = (this.eventIds[direction] || []).concat(this.listeners[direction].on('click', () => {
+    if (Object.keys(this.canvasListeners).length === 0 && !info.isSuccess) {
+      this.canvasListeners[EDirection.Up] = new CanvasListener(this.context.canvas, p1.x, p1.y, p3.x, p3.y);
+      this.canvasListeners[EDirection.Right] = new CanvasListener(this.context.canvas, p3.x, p3.y, p5.x, p5.y);
+      this.canvasListeners[EDirection.Down] = new CanvasListener(this.context.canvas, p9.x, p9.y, p7.x, p7.y);
+      this.canvasListeners[EDirection.Left] = new CanvasListener(this.context.canvas, p11.x, p11.y, p9.x, p9.y);
+      
+      Object.keys(this.canvasListeners).forEach(direction => {
+        const handler = () => {
           controller.trigger(<EDirection>direction);
-        }));
+        }
+        KeyboardListener.on(mapDirection2KeyCode[direction], handler);
+        this.handlerKeys[direction] = (this.handlerKeys[direction] || []).concat(this.canvasListeners[direction].on('click', handler));
       });
     }
     if (info.isSuccess) {
@@ -84,11 +88,12 @@ export default class RenderController implements Render{
   }
 
   clear() {
-    Object.keys(this.eventIds).forEach(direction => {
-      this.eventIds[direction].forEach(id => {
-        this.listeners[direction].remove('click', id);
+    Object.keys(this.handlerKeys).forEach(direction => {
+      this.handlerKeys[direction].forEach(key => {
+        this.canvasListeners[direction].remove('click', key);
+        KeyboardListener.remove(key);
       });
-      this.eventIds[direction] = [];
+      this.handlerKeys[direction] = [];
     });
   }
 }
