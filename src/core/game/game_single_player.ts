@@ -125,7 +125,7 @@ export default class GameSinglePlayer extends Game {
   }
 
   private onGameOver() {
-    console.log(`Congratulations!!! Your score is ${this.timer.displayByS()}S`);
+    console.log(`Congratulations!!! Your score is ${this.pedometer.get()}`);
     this.isSuccess = true;
     this.render();
     this.stop();
@@ -134,11 +134,14 @@ export default class GameSinglePlayer extends Game {
   private initPairedMovers(alias: string) {
     const cells = this.panel.cells.filter(cell => cell.obstacle.type === EObstacleType.Null);
     const clen = cells.length;
-    let [i1, i2] = [-1, -1];
-    let mover: Mover, lockedMover: Mover;
 
-    while(i1 === i2 || !this.panel.reachable(i1, i2)) {
+    let mover: Mover, lockedMover: Mover;
+    let [i1, i2] = [-1, -1];
+    let [x, y] = [cells[i1]?.coordinate.get(), cells[i2]?.coordinate.get()];
+
+    while(i1 === i2 || !this.panel.reachable(x, y)) {
       [i1, i2] = [Math.random() * clen | 0, Math.random() * clen | 0];
+      [x, y] = [cells[i1]?.coordinate.get(), cells[i2]?.coordinate.get()];
     }
     
     if (cells[i1]) {
@@ -164,6 +167,7 @@ export default class GameSinglePlayer extends Game {
 
       this.movers[i] = mover;
       this.lockedMovers[i] = lockedMover;
+
       sets.add(c1);
       sets.add(c2);
     }
