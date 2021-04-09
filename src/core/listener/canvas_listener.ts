@@ -1,4 +1,4 @@
-export default class Listener {
+export default class CanvasListener {
   static handlers: any[] = [];
   static handlerId: number = -1;
   constructor(private ele: HTMLCanvasElement, private x0: number, private y0: number, private x1: number, private y1: number) {} 
@@ -19,15 +19,15 @@ export default class Listener {
         }
       }
     }
-    Listener.handlers[++Listener.handlerId] = selfHandler;
-    this.ele.addEventListener(type, Listener.handlers[Listener.handlerId]);
-    return Listener.handlerId;
+    CanvasListener.handlers[++CanvasListener.handlerId] = selfHandler;
+    this.ele.addEventListener(type, CanvasListener.handlers[CanvasListener.handlerId]);
+    return CanvasListener.handlerId;
   }
 
   remove(type: string, handlerId: number) {
-    if (Listener.handlers[handlerId]) {
+    if (CanvasListener.handlers[handlerId]) {
       console.log('clear');
-      this.ele.removeEventListener(type, Listener.handlers[handlerId]);
+      this.ele.removeEventListener(type, CanvasListener.handlers[handlerId]);
     } 
   }
 }

@@ -1,11 +1,11 @@
 import Render, { Context } from  './render';
-import Listener from './listener';
+import CanvasListener from '../core/listener/canvas_listener';
 import { IRendererInfo } from '../core/game/game_single_player';
 import { ILayouts } from './renderer';
 import EDirection from '../core/units/direction';
 
 export interface IListeners {
-  [direction: string]: Listener
+  [direction: string]: CanvasListener
 }
 
 export interface IEvents {
@@ -68,10 +68,10 @@ export default class RenderController implements Render{
     this.context.fillText('左', p10.x + 15, p10.y - 20);
 
     if (Object.keys(this.listeners).length === 0 && !info.isSuccess) {
-      this.listeners[EDirection.Up] = new Listener(this.context.canvas, p1.x, p1.y, p3.x, p3.y);
-      this.listeners[EDirection.Right] = new Listener(this.context.canvas, p3.x, p3.y, p5.x, p5.y);
-      this.listeners[EDirection.Down] = new Listener(this.context.canvas, p9.x, p9.y, p7.x, p7.y);
-      this.listeners[EDirection.Left] = new Listener(this.context.canvas, p11.x, p11.y, p9.x, p9.y);
+      this.listeners[EDirection.Up] = new CanvasListener(this.context.canvas, p1.x, p1.y, p3.x, p3.y);
+      this.listeners[EDirection.Right] = new CanvasListener(this.context.canvas, p3.x, p3.y, p5.x, p5.y);
+      this.listeners[EDirection.Down] = new CanvasListener(this.context.canvas, p9.x, p9.y, p7.x, p7.y);
+      this.listeners[EDirection.Left] = new CanvasListener(this.context.canvas, p11.x, p11.y, p9.x, p9.y);
       Object.keys(this.listeners).forEach(direction => {
         this.eventIds[direction] = (this.eventIds[direction] || []).concat(this.listeners[direction].on('click', () => {
           controller.trigger(<EDirection>direction);
