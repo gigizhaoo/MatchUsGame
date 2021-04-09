@@ -78,8 +78,10 @@ export default class RenderController implements Render{
         const handler = () => {
           controller.trigger(<EDirection>direction);
         }
-        KeyboardListener.on(mapDirection2KeyCode[direction], handler);
-        this.handlerKeys[direction] = (this.handlerKeys[direction] || []).concat(this.canvasListeners[direction].on('click', handler));
+        this.handlerKeys[direction] = 
+          (this.handlerKeys[direction] || [])
+          .concat(this.canvasListeners[direction].on('click', handler))
+          .concat(KeyboardListener.on(mapDirection2KeyCode[direction], handler));
       });
     }
     if (info.isSuccess) {
